@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+
+        #progress-bar {
+            flex-grow: 2;
+            height: 5px;
+            background-color: #ccc;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        #progress {
+            height: 100%;
+            background-color: #f00;
+            width: 0;
+        }
+
+        #volume-control {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        #volume-bar {
+            width: 100px;
+            height: 5px;
+            background-color: #ccc;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        #volume {
+            height: 100%;
+            background-color: #00f;
+            width: 50%; /* Adjust the default volume here */
+        }
+
+        #play-pause {
+            cursor: pointer;
+            font-size: 20px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <!-- Paste your embedded video code here -->
+        <video id="video" controls>
+            <source src="Heartvideo1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div id="controls">
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <div id="volume-control">
+                <div id="volume-bar">
+                    <div id="volume"></div>
+                </div>
+                <div id="play-pause">&#9658;</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const video = document.getElementById('video');
+        const progress = document.getElementById('progress');
+        const volume = document.getElementById('volume');
+        const playPause = document.getElementById('play-pause');
+
+        let isPlaying = true;
+
+        playPause.addEventListener('click', () => {
+            if (isPlaying) {
+                video.pause();
+                playPause.innerHTML = '&#9658;'; // Play symbol
+            } else {
+                video.play();
+                playPause.innerHTML = '&#9616;&#9616;'; // Pause symbol
+            }
+            isPlaying = !isPlaying;
+        });
+
+        video.addEventListener('timeupdate', () => {
+            const progressPercent = (video.currentTime / video.duration) * 100;
+            progress.style.width = `${progressPercent}%`;
+        });
+
+        let isVolumeDragging = false;
+        volume.addEventListener('mousedown', (e) => {
+            isVolumeDragging = true;
+            updateVolume(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isVolumeDragging) {
+                updateVolume(e);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isVolumeDragging = false;
+        });
+
+        function updateVolume(e) {
+            const volumeBar = volume.getBoundingClientRect();
+            const volumePercent = ((e.clientX - volumeBar.left) / volumeBar.width) * 100;
+            if (volumePercent >= 0 && volumePercent <= 100) {
+                video.volume = volumePercent / 100;
+                volume.style.width = `${volumePercent}%`;
+            }
+        }
+    </script>
+</body>
+</html>
